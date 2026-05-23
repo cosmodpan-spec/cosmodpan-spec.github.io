@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>World Fest · My Tickets</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Special+Elite&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    html { font-size: 110%; scroll-behavior: smooth; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(180deg, #fdfcf9 0%, #e8ded1 100%);
+      color: #1a1a1a;
+      line-height: 1.45;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 45%;
+      background-image: url('https://i1-c.pinimg.com/1200x/58/59/26/585926a573ff38ba03c86aeda0dd0c73.jpg');
+      background-size: cover;
+      background-position: center bottom;
+      background-repeat: no-repeat;
+      filter: blur(8px);
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    .content-wrapper { position: relative; z-index: 2; }
+    .container { max-width: 1540px; margin: 0 auto; padding: 0 6%; }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(253, 252, 249, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #e2d9cf;
+      padding: 1rem 0;
+    }
+    .nav-container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
+    .logo-wrapper { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 32px; height: auto; }
+    .logo { font-family: 'Special Elite', monospace; font-size: 1.6rem; font-weight: 400; letter-spacing: 2px; }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; font-size: 0.85rem; font-weight: 500; color: #1a1a1a; transition: color 0.2s; }
+    .nav-links a:hover { color: #7e5c43; }
+
+    .btn {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid #1a1a1a;
+      padding: 0.6rem 1.5rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: #1a1a1a;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-primary { background: #1a1a1a; border-color: #1a1a1a; color: white; }
+    .btn-primary:hover { background: #2c2c2c; transform: translateY(-2px); }
+    .btn-outline:hover { background: #1a1a1a; color: white; }
+    .filter-btn {
+      background: transparent; border: 1px solid #d4cbc1; padding: 0.4rem 1rem;
+      font-weight: 500; font-size: 0.75rem; cursor: pointer; color: #5c5c5c; border-radius: 40px;
+    }
+    .filter-btn.active, .filter-btn:hover { background: #1a1a1a; border-color: #1a1a1a; color: white; }
+
+    .hero { padding: 4rem 0 2rem; }
+    .hero h1 {
+      font-family: 'Special Elite', monospace;
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 400;
+      margin-bottom: 0.8rem;
+    }
+    .hero p { color: #5c5c5c; max-width: 760px; }
+
+    .tickets-switcher {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin: 2rem 0 2.2rem;
+    }
+
+    .tickets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin: 1rem 0 4rem;
+    }
+    .ticket-card {
+      background: #fff;
+      border: 1px solid #e2d9cf;
+      padding: 1.4rem;
+      border-radius: 20px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.04);
+    }
+    .ticket-card h3 { font-family: 'Special Elite', monospace; font-size: 1.25rem; font-weight: 400; margin-bottom: 0.7rem; }
+    .ticket-meta { color: #5c5c5c; font-size: 0.9rem; margin-bottom: 0.35rem; }
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #5c5c5c;
+      border: 1px dashed #d4cbc1;
+      background: rgba(255,255,255,0.55);
+      border-radius: 18px;
+    }
+
+    footer {
+      background: #fdfaf7;
+      border-top: 1px solid #e2d9cf;
+      padding: 3rem 0 2rem;
+      margin-top: 4rem;
+    }
+    .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 2rem; }
+    .footer-col a { display: block; color: #5c5c5c; text-decoration: none; font-size: 0.75rem; margin-bottom: 0.6rem; }
+    .copyright {
+      text-align: center; padding-top: 2rem; font-size: 0.7rem; color: #5c5c5c;
+      border-top: 1px solid #e2d9cf; margin-top: 2rem;
+    }
+
+    @media (max-width: 780px) {
+      .nav-links { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+<div class="content-wrapper">
+  <div class="navbar">
+    <div class="container nav-container">
+      <div class="logo-wrapper">
+        <img class="logo-icon" src="https://www.kindpng.com/picc/m/263-2633413_symbol-of-alathea-sun-drawings-hd-png-download.png" alt="sun symbol" />
+        <div class="logo">WORLDFEST</div>
+      </div>
+      <div class="nav-links">
+        <a href="123.html">HOME</a>
+        <a href="#">MY TICKETS</a>
+        <button class="btn btn-outline" id="loginBtn" style="display:none;">LOGIN</button>
+        <button class="btn btn-outline" id="logoutBtn" style="display:none;">LOGOUT</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <section class="hero">
+      <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:4px; color:#5c5c5c;">Client area</div>
+      <h1>My Tickets</h1>
+      <p>Here you can see the tickets already booked by the client. Booked data is loaded automatically from the first site.</p>
+    </section>
+
+    <div class="tickets-switcher">
+      <button class="filter-btn active" data-tab="booked">Booked</button>
+      <button class="filter-btn" data-tab="purchased">Purchased</button>
+      <button class="filter-btn" data-tab="cancelled">Cancelled</button>
+    </div>
+
+    <section id="ticketsArea">
+      <div id="bookedSection"></div>
+      <div id="purchasedSection" style="display:none;"></div>
+      <div id="cancelledSection" style="display:none;"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col"><h4>EXPLORE</h4><a href="#">Festivals</a><a href="#">Lineup</a><a href="#">Passes</a></div>
+        <div class="footer-col"><h4>SUPPORT</h4><a href="#">Help Center</a><a href="#">Accessibility</a><a href="#">Health & Safety</a></div>
+        <div class="footer-col"><h4>COMPANY</h4><a href="#">About</a><a href="#">Contact</a><a href="#">Privacy Policy</a></div>
+        <div class="footer-col"><h4>CONNECT</h4><a href="#">Newsletter</a><a href="#">Instagram</a><a href="#">YouTube</a></div>
+      </div>
+      <div class="copyright">© 2026 WORLD FEST — Global Festival Guide. All rights reserved.</div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // ---------- LOGIN / LOGOUT ----------
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  function updateAuthUI() {
+    const user = JSON.parse(localStorage.getItem('worldfestUser') || 'null');
+    if (user && user.email) {
+      loginBtn.style.display = 'none';
+      logoutBtn.style.display = 'inline-block';
+      logoutBtn.innerText = `LOGOUT (${user.email})`;
+      renderBooked();  // показать билеты, если залогинены
+    } else {
+      loginBtn.style.display = 'inline-block';
+      logoutBtn.style.display = 'none';
+      document.getElementById('bookedSection').innerHTML = '<div class="empty-state">Please log in to view your tickets.</div>';
+      document.getElementById('purchasedSection').innerHTML = '';
+      document.getElementById('cancelledSection').innerHTML = '';
+    }
+  }
+
+  loginBtn.onclick = () => {
+    window.location.href = '123.html';  // перенаправить на главную для логина
+  };
+
+  logoutBtn.onclick = () => {
+    localStorage.removeItem('worldfestUser');
+    updateAuthUI();
+    alert('You have been logged out.');
+  };
+
+  function renderBooked() {
+    const user = JSON.parse(localStorage.getItem('worldfestUser') || 'null');
+    if (!user || !user.email) {
+      document.getElementById('bookedSection').innerHTML = '<div class="empty-state">Please log in to view your tickets.</div>';
+      return;
+    }
+
+    const data = JSON.parse(localStorage.getItem('worldfestBookings') || '[]');
+    const box = document.getElementById('bookedSection');
+
+    if (!data.length) {
+      box.innerHTML = '<div class="empty-state">No booked tickets yet.</div>';
+      return;
+    }
+
+    box.innerHTML = `
+      <div class="tickets-grid">
+        ${data.map(item => `
+          <div class="ticket-card">
+            <h3>${item.concertName || 'Concert'}</h3>
+            <div class="ticket-meta"><b>Date:</b> ${item.date || '-'}</div>
+            <div class="ticket-meta"><b>Ticket type:</b> ${item.ticketType || '-'}</div>
+            <div class="ticket-meta"><b>Name:</b> ${item.name || '-'}</div>
+            <div class="ticket-meta"><b>Phone:</b> ${item.phone || '-'}</div>
+            <div class="ticket-meta"><b>Price:</b> $${item.price || '-'}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function showTab(tab) {
+    document.getElementById('bookedSection').style.display = tab === 'booked' ? 'block' : 'none';
+    document.getElementById('purchasedSection').style.display = tab === 'purchased' ? 'block' : 'none';
+    document.getElementById('cancelledSection').style.display = tab === 'cancelled' ? 'block' : 'none';
+
+    if (tab === 'purchased') {
+      document.getElementById('purchasedSection').innerHTML = '<div class="empty-state">No purchased tickets yet.</div>';
+    }
+    if (tab === 'cancelled') {
+      document.getElementById('cancelledSection').innerHTML = '<div class="empty-state">No cancelled tickets yet.</div>';
+    }
+    if (tab === 'booked') renderBooked();
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      showTab(btn.dataset.tab);
+    });
+  });
+
+  updateAuthUI();
+  showTab('booked');
+</script>
+</body>
+</html>
